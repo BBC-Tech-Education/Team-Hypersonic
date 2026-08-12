@@ -7,7 +7,7 @@
 /* ROBOT */
 #define ROBOT_1 false
 #define ROBOT_2 (!ROBOT_1)
-#define ATTACK true
+#define ATTACK false
 
 /* ATTACK DIRECTION */
 #define BLUE_GOAL_ATTACK true

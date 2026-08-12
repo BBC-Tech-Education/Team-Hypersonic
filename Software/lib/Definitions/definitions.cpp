@@ -42,6 +42,25 @@ bool angleIsInside(float angleBoundCounterClockwise, float angleBoundClockwise, 
 float ballPixelToCm(float ballPixelDist) {
     return 0.00304002f * ballPixelDist * ballPixelDist;
 }
+
 float goalPixelToCm(float goalPixelDist) {
-    return 0.00304002f * goalPixelDist * goalPixelDist; // tune
+    return expf(0.0252506f * goalPixelDist) - 1.0f;
+}
+
+float vectorMag(float i, float j) {
+    return sqrtf((i * i) + (j * j));
+}
+
+float vectorPolarAngle(float cartesianAngle) {
+    return floatMod(450.0f - cartesianAngle, 360.0f);
+}
+
+float vectorI(float mag, float cartesianAngle) {
+    float polarAngle = vectorPolarAngle(cartesianAngle);
+    return mag * cosf(polarAngle * DEG_TO_RAD_F);
+}
+
+float vectorJ(float mag, float cartesianAngle) {
+    float polarAngle = vectorPolarAngle(cartesianAngle);
+    return mag * sinf(polarAngle * DEG_TO_RAD_F);
 }

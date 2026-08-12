@@ -9,12 +9,9 @@
 #define ATTACK_SLOW_SPEED (ROBOT_1 ? 32.5f : 45.0f)
 #define ATTACK_FAST_SPEED (ROBOT_1 ? 37.5f : 50.0f)
 #define ATTACK_CLOSE_DISTANCE 30.0f // DON'T CHANGE THIS
-#define ATTACK_SURGE_DISTANCE 22.5f // 20.0f
-#define ATTACK_SURGE_ANGLE 7.5f
-#define ATTACK_SURGE_SPEED 25.0f
-#define ORBIT_MAX_OFFSET 80.0f
-#define ORBIT_MIN_MULTIPLIER 0.0f
-#define ORBIT_MAX_MULTIPLIER 1.0f
+#define ATTACK_SURGE_DISTANCE 20.0f
+#define ATTACK_SURGE_ANGLE 8.0f
+#define ATTACK_SURGE_SPEED 50.0f
 
 /* Defend */
 #define DEFEND_SURGE_SPEED 0.0f
@@ -26,13 +23,11 @@
 
 /* PIDs */
 // Defender: lower absoluteMax if overshooting big differences (vertical/horizontal)
-
 // Compass Correct PID
 // Increase D, push robot, wait until constant oscillation
 // Halve D
 // Increase P until constant oscillation
 // Halve P
-
 #define IMU_KP (ROBOT_1 ? 0.6f : 0.6f) // not too high (impacts orbit) 
 #define IMU_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define IMU_KD (ROBOT_1 ? (0.0575f / 2.0f) : (0.06f / 2.0f)) // 0.03f
@@ -51,16 +46,16 @@
 #define DEFEND_GOAL_TRACK_MAX (ROBOT_1 ? 0.0f : 0.0f)
 
 // Horizontal PID
-#define HORIZONTAL_KP (ROBOT_1 ? 0.75f : 1.0f) // low
+#define HORIZONTAL_KP (ROBOT_1 ? 0.75f : 0.6f) // low
 #define HORIZONTAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define HORIZONTAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
 #define HORIZONTAL_MAX (ROBOT_1 ? 30.0f : 30.0f) // high
 
 // Vertical PID
-#define VERTICAL_KP (ROBOT_1 ? 20.0f : 20.0f) // high
+#define VERTICAL_KP (ROBOT_1 ? 20.0f : 7.5f) // high
 #define VERTICAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define VERTICAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
-#define VERTICAL_MAX (ROBOT_1 ? 25.0f : 25.0f) // low
+#define VERTICAL_MAX (ROBOT_1 ? 25.0f : 30.0f) // low
 
 /* Pins */
 // Voltage Divider
@@ -71,19 +66,15 @@
 // Motors
 #define MOTOR_NUM 4
 #define MOTOR_PWM_FREQ 15000.0f
-
 #define FL_PWM 28
 #define FL_INA 30
 #define FL_INB 29
-
 #define FR_PWM 11
 #define FR_INA 27
 #define FR_INB 12
-
 #define BR_PWM 5
 #define BR_INA 7
 #define BR_INB 6
-
 #define BL_PWM 8
 #define BL_INA 10
 #define BL_INB 9
@@ -122,9 +113,12 @@ int16_t mod(int16_t x, int16_t m);
 bool angleIsInside(float angleBoundCounterClockwise, float angleBoundClockwise, float angleCheck);
 float ballPixelToCm(float ballPixelDist);
 float goalPixelToCm(float goalPixelDist);
+float vectorMag(float i, float j);
+float vectorPolarAngle(float cartesianAngle);
+float vectorI(float mag, float cartesianAngle);
+float vectorJ(float mag, float cartesianAngle);
 
 /* Trigonometry */
 #define RAD_TO_DEG_F 57.29578f
 #define DEG_TO_RAD_F 0.017453293f
-
 #endif

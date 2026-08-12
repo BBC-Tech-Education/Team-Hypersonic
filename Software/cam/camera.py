@@ -23,8 +23,8 @@ BLUE = 4
 # Ball, Yellow, Blue
 THRESHOLDS = [
     (37, 70, 19, 66, 27, 57),  # Ball
-    (35, 41, -4, 12, 15, 33),  # Yellow
-    (27, 37, -4, 8, -35, -20),  # Blue
+    (32, 58, -5, 10, 12, 33),  # Yellow
+    (27, 37, -4, 8, -35, -13),  # Blue
 ]
 # (100, 100, 0, 0, 0, 0)
 
@@ -137,9 +137,9 @@ else:
         # img.draw_line((FRAME_CX, FRAME_CY - 5, FRAME_CX, FRAME_CY + 5)) # vertical
 
         # Draws lines to centres of blobs
-        img.draw_line((FRAME_CX, FRAME_CY, data[2], data[3]))  # draws line from center to ball
-        img.draw_line((FRAME_CX, FRAME_CY, data[4], data[5]))  # draws line from center to ygoal
-        img.draw_line((FRAME_CX, FRAME_CY, data[6], data[7]))  # draws line from center to bgoal
+        # img.draw_line((FRAME_CX, FRAME_CY, data[2], data[3]))  # draws line from center to ball
+        # img.draw_line((FRAME_CX, FRAME_CY, data[4], data[5]))  # draws line from center to ygoal
+        # img.draw_line((FRAME_CX, FRAME_CY, data[6], data[7]))  # draws line from center to bgoal
 
         uart.writechar(data[0])
         uart.writechar(data[1])
