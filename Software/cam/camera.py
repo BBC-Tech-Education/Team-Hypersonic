@@ -10,31 +10,23 @@ FRAME_HEIGHT = 480 if ROBOT_1 else 480
 FRAME_WIDTH = 480 if ROBOT_1 else 480
 
 #        ROBOT_1,            ROBOT_2
-# FRAME_CX = 245 if ROBOT_1 else 225
-# FRAME_CY = 197 if ROBOT_1 else 190
-# FRAME_R = 223 if ROBOT_1 else 210
-
 FRAME_CX = 245 if ROBOT_1 else 225
 FRAME_CY = 197 if ROBOT_1 else 190
 FRAME_R = 223 if ROBOT_1 else 210
 
 GOAL_MIN_AREA = 200
 GOAL_MIN_PIXELS = 100
-BALL_MIN_AREA = 30  # 5
-BALL_MIN_PIXELS = 30  # 5
+BALL_MIN_AREA = 5
+BALL_MIN_PIXELS = 5
 
 BALL = 1
 YELLOW = 2
 BLUE = 4
 
 THRESHOLDS = [
-    # (37, 62, 24, 60, 30, 55),  # Ball
-    # (26, 39, -4, 10, 20, 33),  # Yellow
-    # (25, 35, -16, -8, -12, 5),  # Blue
-
-    (23, 36, 14, 33, 23, 39),  # Ball
-    (100, 100, 0, 0, 0, 0),  # Yellow
-    (9, 30, -16, 2, -22, -5),  # Blue
+    (37, 62, 24, 60, 30, 55),  # Ball
+    (26, 39, -4, 10, 20, 33),  # Yellow
+    (25, 35, -16, -8, -12, 5),  # Blue
 ]
 # (100, 100, 0, 0, 0, 0)
 
