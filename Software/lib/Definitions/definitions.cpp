@@ -40,7 +40,11 @@ bool angleIsInside(float angleBoundCounterClockwise, float angleBoundClockwise, 
 }
 
 float ballPixelToCm(float ballPixelDist) {
+    #if ROBOT_1
+    return (2.33681f * expf(0.0180409f * ballPixelDist)) - 2.33681f;
+    #else 
     return 0.00304002f * ballPixelDist * ballPixelDist;
+    #endif
 }
 
 float goalPixelToCm(float goalPixelDist) {

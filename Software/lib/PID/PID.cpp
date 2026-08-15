@@ -34,3 +34,4 @@ float PID::update(float input, float setpoint, float modulus) {
     float correction = kp * error + ki * integral - kd * derivative;
     return absMax == 0.0f ? correction : constrain(correction, -absMax, absMax);
 }
+

@@ -1,12 +1,6 @@
 #include "camera.h"
 
- /*
- TODO:
- -> check distances and angles are correct
- -> tune goal pixel to cm function
- */
-
-void Camera::init() { // Initialise UART with baud rate
+void Camera::init() { // Initialises UART with baud rate
     CAMERA_SERIAL.begin(115200);
 }
 
@@ -32,36 +26,62 @@ void Camera::update() {
         uint8_t second = CAMERA_SERIAL.peek();
 
         if (first == CAMERA_START_BYTE && second == CAMERA_START_BYTE) { // Checks start bytes
-            // fps = (1000.0f)/(millis() - camTime);
-            // camTime = millis();
-            // Serial.println(fps);
+            fps = (1000.0f)/(millis() - camTime);
+            camTime = millis();
 
             CAMERA_SERIAL.read(); // Reads 2nd start byte
 
             for (uint8_t byte = 0; byte < CAMERA_PACKET_NUMBER - 2; byte++) { // Reads full packet
                 receivedPacket[byte] = CAMERA_SERIAL.read();
-                // Serial.print(receivedPacket[byte]);
-                // Serial.print(" ");
             }
-            // Serial.println();
 
             for (uint8_t byte = 0; byte < (CAMERA_PACKET_NUMBER - 2) / 2; byte++) { // Converts byte pairs into 16-bit integers
                 camData[byte] = receivedPacket[byte * 2] | (receivedPacket[(byte * 2) + 1] << 8);
-                // Serial.print(camData[byte]);
-                // Serial.print(" ");
             }
-            // Serial.println();
 
-            ballDist = (camData[0] == 500) ? 0.0f : ballPixelToCm(distance(camData[0], camData[1])); // 500.0f means no ball detected
-            ballAngle = (camData[0] == 500) ? -1.0f : angle(camData[0], camData[1]);
-            float yellowGoalDist = (camData[2] == 500) ? 0.0f : goalPixelToCm(distance(camData[2], camData[3]));
-            float yellowGoalAngle = (camData[2] == 500) ? -1.0f : angle(camData[2], camData[3]);
-            float blueGoalDist = (camData[4] == 500) ? 0.0f : goalPixelToCm(distance(camData[4], camData[5]));
-            float blueGoalAngle = (camData[4] == 500) ? -1.0f : angle(camData[4], camData[5]);
+            if (camData[0] != 500) {
+                lastTimeBallSeen = millis();
+                ballDist = ballPixelToCm(distance(camData[0], camData[1]));
+                ballAngle = angle(camData[0], camData[1]);
+                ball = true;
+            } else if ((millis() - lastTimeBallSeen) > 100) {
+                ballDist = 0.0f;
+                ballAngle = -1.0f;
+                ball = false;
+            }
+
+            if (camData[2] != 500) {
+                lastTimeYellowGoalSeen = millis();
+                yellowGoalDist = goalPixelToCm(distance(camData[2], camData[3]));
+                yellowGoalAngle = angle(camData[2], camData[3]);
+                yellowGoal = true;
+            } else if ((millis() - lastTimeYellowGoalSeen) > 100) {
+                yellowGoalDist = 0.0f;
+                yellowGoalAngle = -1.0f;
+                yellowGoal = false;
+            }
+
+            if (camData[4] != 500) {
+                lastTimeBlueGoalSeen = millis();
+                blueGoalDist = goalPixelToCm(distance(camData[4], camData[5]));
+                blueGoalAngle = angle(camData[4], camData[5]);
+                blueGoal = true;
+            } else if ((millis() - lastTimeBlueGoalSeen) > 100) {
+                blueGoalDist = 0.0f;
+                blueGoalAngle = -1.0f;
+                blueGoal = false;
+            }
+
+            lastTimeAttackGoalSeen = BLUE_GOAL_ATTACK ? lastTimeBlueGoalSeen : lastTimeYellowGoalSeen;
+            lastTimeDefendGoalSeen = BLUE_GOAL_ATTACK ? lastTimeYellowGoalSeen : lastTimeBlueGoalSeen;
+            
             attackGoalDist = BLUE_GOAL_ATTACK ? blueGoalDist : yellowGoalDist;
             defendGoalDist = BLUE_GOAL_ATTACK ? yellowGoalDist : blueGoalDist;
             attackGoalAngle = BLUE_GOAL_ATTACK ? blueGoalAngle : yellowGoalAngle;
             defendGoalAngle = BLUE_GOAL_ATTACK ? yellowGoalAngle : blueGoalAngle;
+
+            attackGoal = BLUE_GOAL_ATTACK ? (blueGoalDist != 0.0f) : (yellowGoalDist != 0.0f);
+            defendGoal = BLUE_GOAL_ATTACK ? (yellowGoalDist != 0.0f) : (blueGoalDist != 0.0f);
         }
     }
 }

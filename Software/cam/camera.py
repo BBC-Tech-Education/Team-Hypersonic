@@ -3,35 +3,37 @@ import time
 from machine import LED, UART
 from math import sqrt
 
-CALIBRATION = False  # Prints exposure, gain and WB values
+ROBOT_1 = True
+CALIBRATION = False
 
-FRAME_HEIGHT = 400
-FRAME_WIDTH = 400
-FRAME_CX = 190  # Robot 2 190, Robot 1 220
-FRAME_CY = 200  # Robot 2 200, Robot 1 210
-FRAME_R = 200  # Robot 2 200, Robot 1 193
+FRAME_HEIGHT = 480 if ROBOT_1 else 480
+FRAME_WIDTH = 480 if ROBOT_1 else 480
+
+#        ROBOT_1,            ROBOT_2
+FRAME_CX = 245 if ROBOT_1 else 225
+FRAME_CY = 197 if ROBOT_1 else 190
+FRAME_R = 223 if ROBOT_1 else 210
 
 GOAL_MIN_AREA = 200
 GOAL_MIN_PIXELS = 100
-BALL_MIN_AREA = 5
-BALL_MIN_PIXELS = 5
+BALL_MIN_AREA = 30  # 5
+BALL_MIN_PIXELS = 30  # 5
 
-BALL = 1  # Blob codes returned by find_blobs()
+BALL = 1
 YELLOW = 2
 BLUE = 4
 
-# Ball, Yellow, Blue
 THRESHOLDS = [
-    (37, 70, 19, 66, 27, 57),  # Ball
-    (32, 58, -5, 10, 12, 33),  # Yellow
-    (27, 37, -4, 8, -35, -13),  # Blue
+    (37, 62, 24, 60, 30, 55),  # Ball
+    (26, 39, -4, 10, 20, 33),  # Yellow
+    (25, 35, -16, -8, -12, 5),  # Blue
 ]
 # (100, 100, 0, 0, 0, 0)
 
 led = LED("LED_GREEN")
 led.on()
 
-cam = csi.CSI()  # Init
+cam = csi.CSI()
 cam.reset()
 cam.pixformat(csi.RGB565)
 cam.framesize(csi.VGA)
@@ -39,16 +41,17 @@ cam.window((FRAME_WIDTH, FRAME_HEIGHT))
 cam.snapshot()
 
 if CALIBRATION:
-    cam.auto_exposure(False, exposure_us=16648)
+    # cam.auto_exposure(True)
+    # cam.auto_gain(True)
+    cam.auto_exposure(False, exposure_us=8248)
     cam.auto_gain(False, gain_db=20.0824)
     cam.auto_whitebal(True)
     print("Calibration Mode")
 
 else:
-    cam.auto_exposure(False, exposure_us=8328)  # 120fps: 8248;   60fps: 16648
+    cam.auto_exposure(False, exposure_us=8328)  # 120fps: 8328;   60fps: 16648
     cam.auto_gain(False, gain_db=20.1079)
-    cam.auto_whitebal(False, rgb_gain_db=(7.234556, 0.0, 5.650932))
-    # ccm/gamma
+    cam.auto_whitebal(False, rgb_gain_db=(4.369902, 0.0, 7.56392))
 
 clock = time.clock()
 clock.reset()
@@ -62,6 +65,7 @@ if CALIBRATION:
     while (True):
         clock.tick()
         img = cam.snapshot()
+        img.draw_circle((FRAME_CX, FRAME_CY, FRAME_R))
         print("Gain:", cam.gain_db(), "Exposure:", cam.exposure_us(), "WB:", cam.rgb_gain_db())
 
 else:
@@ -93,7 +97,7 @@ else:
             blobY = blob.cy - FRAME_CY
             mag = sqrt(blobX * blobX + blobY * blobY)
 
-            if mag > FRAME_R:  # Ignores blobs outside radius
+            if mag > FRAME_R:
                 continue
 
             if blob.code == BALL:
@@ -132,11 +136,9 @@ else:
             data[6] = (rawBlobs[2]).cx
             data[7] = (rawBlobs[2]).cy
 
-        # Draws center crosshair to center mirror
         # img.draw_line((FRAME_CX - 5, FRAME_CY, FRAME_CX + 5, FRAME_CY)) # horizontal
         # img.draw_line((FRAME_CX, FRAME_CY - 5, FRAME_CX, FRAME_CY + 5)) # vertical
 
-        # Draws lines to centres of blobs
         # img.draw_line((FRAME_CX, FRAME_CY, data[2], data[3]))  # draws line from center to ball
         # img.draw_line((FRAME_CX, FRAME_CY, data[4], data[5]))  # draws line from center to ygoal
         # img.draw_line((FRAME_CX, FRAME_CY, data[6], data[7]))  # draws line from center to bgoal

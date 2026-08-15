@@ -1,5 +1,5 @@
-#ifndef VD_H
-#define VD_H
+#ifndef VOLTDIV_H
+#define VOLTDIV_H
 
 #include "definitions.h"
 
@@ -11,6 +11,8 @@ class VoltageDivider {
         void update(); 
 
         bool batteryLow = false;
+
+        float battVoltage = -1.0f;
         
     private:
         uint8_t counter = 0;

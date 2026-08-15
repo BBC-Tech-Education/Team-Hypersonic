@@ -43,8 +43,6 @@ class LightSensors {
 
         bool onField = true;
 
-        // float fieldLineAngle = -1.0f;
-        // float fieldLineSize = -1.0f;
 };
 
 #endif

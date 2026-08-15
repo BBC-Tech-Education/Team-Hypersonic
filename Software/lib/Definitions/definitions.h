@@ -6,20 +6,18 @@
 #include "config.h"
 
 /* Attack */
-#define ATTACK_SLOW_SPEED (ROBOT_1 ? 32.5f : 45.0f)
-#define ATTACK_FAST_SPEED (ROBOT_1 ? 37.5f : 50.0f)
-#define ATTACK_CLOSE_DISTANCE 30.0f // DON'T CHANGE THIS
+#define ATTACK_SLOW_SPEED (ROBOT_1 ? 25.0f : 35.0f)
+#define ATTACK_FAST_SPEED (ROBOT_1 ? 35.0f : 40.0f)
+#define ATTACK_CLOSE_DISTANCE (ROBOT_1 ? 30.0f : 12.0f) // DON'T CHANGE THIS
 #define ATTACK_SURGE_DISTANCE 20.0f
 #define ATTACK_SURGE_ANGLE 8.0f
 #define ATTACK_SURGE_SPEED 50.0f
 
 /* Defend */
-#define DEFEND_SURGE_SPEED 0.0f
-#define DEFEND_GOAL_DISTANCE 0.0f
-#define DEFEND_SURGE_DISTANCE 0.0f
-#define DEFEND_BALL_DISTANCE 0.0f
-#define DEFEND_SURGE_ANGLE 0.0f // 30.0f in 2025
-#define DEFEND_ORBIT_ANGLE 0.0f
+#define DEFEND_SURGE_SPEED 50.0f
+#define DEFEND_GOAL_DISTANCE (ROBOT_1 ? 45.0f : 30.0f)
+#define DEFEND_SURGE_DISTANCE (ROBOT_1 ? 52.5f : 35.0f)
+#define DEFEND_BALL_DISTANCE (ROBOT_1 ? 10.0f : 30.0f)
 
 /* PIDs */
 // Defender: lower absoluteMax if overshooting big differences (vertical/horizontal)
@@ -34,28 +32,28 @@
 #define IMU_MAX (ROBOT_1 ? 0.0f : 0.0f)
 
 // Attacker Goal Tracking PID
-#define ATTACK_GOAL_TRACK_KP (ROBOT_1 ? 0.15f : 0.4f) // high
+#define ATTACK_GOAL_TRACK_KP (ROBOT_1 ? 0.3f : 0.4f) // high
 #define ATTACK_GOAL_TRACK_KI (ROBOT_1 ? 0.0f : 0.0f)
-#define ATTACK_GOAL_TRACK_KD (ROBOT_1 ? 0.0f : 0.01f) // no D
-#define ATTACK_GOAL_TRACK_MAX (ROBOT_1 ? 25.0f : 30.0f)
+#define ATTACK_GOAL_TRACK_KD (ROBOT_1 ? 0.013f : 0.01f) // no D
+#define ATTACK_GOAL_TRACK_MAX (ROBOT_1 ? 30.0f : 30.0f)
 
 // Defender Goal Tracking PID
-#define DEFEND_GOAL_TRACK_KP (ROBOT_1 ? 0.2f : 0.2f) // high
+#define DEFEND_GOAL_TRACK_KP (ROBOT_1 ? 0.2f : 0.5f) // high
 #define DEFEND_GOAL_TRACK_KI (ROBOT_1 ? 0.0f : 0.0f)
-#define DEFEND_GOAL_TRACK_KD (ROBOT_1 ? 0.02f : 0.02f) // high D
+#define DEFEND_GOAL_TRACK_KD (ROBOT_1 ? 0.006f : 0.02f) // high D
 #define DEFEND_GOAL_TRACK_MAX (ROBOT_1 ? 0.0f : 0.0f)
 
 // Horizontal PID
-#define HORIZONTAL_KP (ROBOT_1 ? 0.75f : 0.6f) // low
+#define HORIZONTAL_KP (ROBOT_1 ? 0.8f : 0.7f) // low // 0.75, _
 #define HORIZONTAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define HORIZONTAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
-#define HORIZONTAL_MAX (ROBOT_1 ? 30.0f : 30.0f) // high
+#define HORIZONTAL_MAX (ROBOT_1 ? 35.0f : 30.0f) // high
 
 // Vertical PID
-#define VERTICAL_KP (ROBOT_1 ? 20.0f : 7.5f) // high
+#define VERTICAL_KP (ROBOT_1 ? 1.5f : 7.5f) // high
 #define VERTICAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define VERTICAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
-#define VERTICAL_MAX (ROBOT_1 ? 25.0f : 30.0f) // low
+#define VERTICAL_MAX (ROBOT_1 ? 30.0f : 30.0f) // low
 
 /* Pins */
 // Voltage Divider
@@ -97,8 +95,8 @@
 #define CAMERA_SERIAL Serial1
 #define CAMERA_PACKET_NUMBER 14
 #define CAMERA_START_BYTE 255
-#define CX (ROBOT_1 ? 220 : 190)
-#define CY (ROBOT_1 ? 210 : 200)
+#define CX (ROBOT_1 ? 245 : 225)
+#define CY (ROBOT_1 ? 197 : 190)
 
 // Bluetooth
 
@@ -121,4 +119,21 @@ float vectorJ(float mag, float cartesianAngle);
 /* Trigonometry */
 #define RAD_TO_DEG_F 57.29578f
 #define DEG_TO_RAD_F 0.017453293f
+
+/* FSMs */
+enum AttackState {
+    ATTACK_ORBIT,
+    ATTACK_CENTER,
+    ATTACK_PAUSE
+};
+
+enum DefendState {
+    DEFEND_NORMAL,
+    DEFEND_GOAL_CENTER,
+    DEFEND_VERTICAL,
+    DEFEND_SURGE,
+    DEFEND_ORBIT,
+    DEFEND_CENTER
+};
+
 #endif
