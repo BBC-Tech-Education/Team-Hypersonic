@@ -182,18 +182,15 @@ void attack() {
     switch (attackState) {
         case ATTACK_ORBIT:
             getOrbitMovement();
-            // Serial.println("A1");
             break;
         
         case ATTACK_PAUSE:
             moveSpeed = 0.0f;
             moveAngle = -1.0f;
-            // Serial.println("A2");
             break;
 
         case ATTACK_CENTER:
             centerMidField();
-            // Serial.println("A3");
             break;
 
     }
@@ -224,7 +221,10 @@ void getDefendMovement() {
     float ballDiff = fsign(direction) * (smallestAngleBetween(floatMod(absoluteDefendGoalAngle + 180.0f, 360.0f), absoluteBallAngle));
     float side = -1.0f * defendHorizontalPID.update(ballDiff, 0.0f);
     float fwd = defendVerticalPID.update(camera.defendGoalDist, DEFEND_GOAL_DISTANCE);
-    Serial.println(fwd);
+    Serial.print(camera.defendGoalDist);
+    Serial.print(" ");
+    Serial.print(fwd);
+    Serial.println();
 
     moveSpeed = sqrtf((side * side) + (fwd * fwd));
     moveAngle = floatMod((450.0f - (atan2f(fwd, side) * RAD_TO_DEG_F)), 360.0f);
@@ -245,10 +245,12 @@ void defend() {
     DefendState defendState = getDefendState();
     getDefendRotation();
 
+    float fwd = 0.0f;
+
     switch (defendState) {
         case DEFEND_NORMAL:
             getDefendMovement();
-            Serial.println("D1");
+            // Serial.println("D1");
             break;
 
         case DEFEND_SURGE:
@@ -258,8 +260,9 @@ void defend() {
             break;
 
         case DEFEND_VERTICAL:
-            moveSpeed = defendVerticalPID.update(camera.defendGoalDist, DEFEND_GOAL_DISTANCE);
-            moveAngle = (defendVerticalPID.update(camera.defendGoalDist, DEFEND_GOAL_DISTANCE) >= 0.0f) ? floatMod(camera.defendGoalAngle + 180.0f + heading, 360.0f) : floatMod(camera.defendGoalAngle + heading, 360.0f);
+            fwd = defendVerticalPID.update(camera.defendGoalDist, DEFEND_GOAL_DISTANCE);
+            moveSpeed = fabsf(fwd);
+            moveAngle = (fwd >= 0.0f) ? floatMod(camera.defendGoalAngle + 180.0f + heading, 360.0f) : floatMod(camera.defendGoalAngle + heading, 360.0f);
             // Serial.println("D3");
             break;
 
@@ -279,6 +282,7 @@ void defend() {
             break;
 
     }
+    // Serial.println(camera.defendGoalDist);
 }
 
 void oldDefend() {
@@ -343,7 +347,7 @@ void oldDefend() {
             }
             break;
     }
-    Serial.println(fwd);
+    // Serial.println(fwd);
 }
 
 void debug() {
@@ -401,7 +405,6 @@ void loop() {
     attack();
     #else
     defend();
-    getDefendRotation();
     #endif
 
     updateLine();

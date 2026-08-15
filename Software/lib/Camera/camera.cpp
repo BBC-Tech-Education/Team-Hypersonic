@@ -41,7 +41,8 @@ void Camera::update() {
 
             if (camData[0] != 500) {
                 lastTimeBallSeen = millis();
-                ballDist = ballPixelToCm(distance(camData[0], camData[1]));
+                float bPx = distance(camData[0], camData[1]);
+                ballDist = (bPx == 0.0f) ? 0.0f : ballPixelToCm(fmaxf(bPx, 1.0f));
                 ballAngle = angle(camData[0], camData[1]);
                 ball = true;
             } else if ((millis() - lastTimeBallSeen) > 100) {
@@ -52,7 +53,8 @@ void Camera::update() {
 
             if (camData[2] != 500) {
                 lastTimeYellowGoalSeen = millis();
-                yellowGoalDist = goalPixelToCm(distance(camData[2], camData[3]));
+                float yPx = distance(camData[2], camData[3]);
+                yellowGoalDist = (yPx == 0.0f) ? 0.0f : goalPixelToCm(fmaxf(yPx, 1.0f));
                 yellowGoalAngle = angle(camData[2], camData[3]);
                 yellowGoal = true;
             } else if ((millis() - lastTimeYellowGoalSeen) > 100) {
@@ -63,7 +65,8 @@ void Camera::update() {
 
             if (camData[4] != 500) {
                 lastTimeBlueGoalSeen = millis();
-                blueGoalDist = goalPixelToCm(distance(camData[4], camData[5]));
+                float bPx = distance(camData[4], camData[5]);
+                blueGoalDist = (bPx == 0.0f) ? 0.0f : goalPixelToCm(fmaxf(bPx, 1.0f));
                 blueGoalAngle = angle(camData[4], camData[5]);
                 blueGoal = true;
             } else if ((millis() - lastTimeBlueGoalSeen) > 100) {
