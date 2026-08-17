@@ -69,6 +69,7 @@ void getAttackRotation() {
     rotation = camera.attackGoal
     ? attackGoalRotation
     : compassCorrectPID.update(heading, 0.0f);
+    // rotation = compassCorrectPID.update(heading, 0.0f);
 }
 
 void getDefendRotation() {
@@ -152,10 +153,10 @@ void centerMidField() {
         return;
     } else if ((camera.attackGoal) && (!camera.defendGoal)) { // attack goal visible only
         defX = attX;
-        defY = attY - 200.0f;
+        defY = attY - FIELD_LENGTH;
     } else if ((camera.defendGoal) && (!camera.attackGoal)) { // defend goal visible only
         attX = defX;
-        attY = defY + 200.0f;
+        attY = defY + FIELD_LENGTH;
     }
 
     float sumX = attX + defX;
@@ -387,7 +388,7 @@ void updateLine() {
         }   
     } 
     #else
-    if (lightSensors.fieldLineSize > 0.5f) {
+    if (lightSensors.fieldLineSize > 0.35f) {
         lineAvoid();
     } 
     #endif

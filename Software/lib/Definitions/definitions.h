@@ -7,7 +7,7 @@
 
 /* Attack */
 #define ATTACK_SLOW_SPEED (ROBOT_1 ? 25.0f : 35.0f)
-#define ATTACK_FAST_SPEED (ROBOT_1 ? 35.0f : 40.0f)
+#define ATTACK_FAST_SPEED (ROBOT_1 ? 35.0f : 37.5f)
 #define ATTACK_CLOSE_DISTANCE (ROBOT_1 ? 30.0f : 12.0f) // DON'T CHANGE THIS
 #define ATTACK_SURGE_DISTANCE 20.0f
 #define ATTACK_SURGE_ANGLE 8.0f
@@ -15,9 +15,9 @@
 
 /* Defend */
 #define DEFEND_SURGE_SPEED 50.0f
-#define DEFEND_GOAL_DISTANCE (ROBOT_1 ? 45.0f : 30.0f)
-#define DEFEND_SURGE_DISTANCE (ROBOT_1 ? 52.5f : 35.0f)
-#define DEFEND_BALL_DISTANCE (ROBOT_1 ? 10.0f : 30.0f)
+#define DEFEND_GOAL_DISTANCE (ROBOT_1 ? 42.5f : 30.0f)
+#define DEFEND_SURGE_DISTANCE (ROBOT_1 ? 57.5f : 35.0f)
+#define DEFEND_BALL_DISTANCE (ROBOT_1 ? 19.0f : 30.0f)
 
 /* PIDs */
 // Defender: lower absoluteMax if overshooting big differences (vertical/horizontal)
@@ -32,7 +32,7 @@
 #define IMU_MAX (ROBOT_1 ? 0.0f : 0.0f)
 
 // Attacker Goal Tracking PID
-#define ATTACK_GOAL_TRACK_KP (ROBOT_1 ? 0.3f : 0.4f) // high
+#define ATTACK_GOAL_TRACK_KP (ROBOT_1 ? 0.3f : 0.2f) // high
 #define ATTACK_GOAL_TRACK_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define ATTACK_GOAL_TRACK_KD (ROBOT_1 ? 0.013f : 0.01f) // no D
 #define ATTACK_GOAL_TRACK_MAX (ROBOT_1 ? 30.0f : 30.0f)
@@ -44,10 +44,10 @@
 #define DEFEND_GOAL_TRACK_MAX (ROBOT_1 ? 0.0f : 0.0f)
 
 // Horizontal PID
-#define HORIZONTAL_KP (ROBOT_1 ? 0.8f : 0.7f) // low // 0.75, _
+#define HORIZONTAL_KP (ROBOT_1 ? 0.7f : 0.7f) // low // 0.75, _
 #define HORIZONTAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define HORIZONTAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
-#define HORIZONTAL_MAX (ROBOT_1 ? 35.0f : 30.0f) // high
+#define HORIZONTAL_MAX (ROBOT_1 ? 25.0f : 30.0f) // high
 
 // Vertical PID
 #define VERTICAL_KP (ROBOT_1 ? 1.5f : 7.5f) // high
@@ -95,8 +95,8 @@
 #define CAMERA_SERIAL Serial1
 #define CAMERA_PACKET_NUMBER 14
 #define CAMERA_START_BYTE 255
-#define CX (ROBOT_1 ? 245 : 225)
-#define CY (ROBOT_1 ? 197 : 190)
+#define CX (ROBOT_1 ? 245 : 240)
+#define CY (ROBOT_1 ? 197 : 200)
 
 // Bluetooth
 
@@ -135,5 +135,7 @@ enum DefendState {
     DEFEND_ORBIT,
     DEFEND_CENTER
 };
+
+#define FIELD_LENGTH (ROBOT_1) ? 200.0f : 180.0f;
 
 #endif

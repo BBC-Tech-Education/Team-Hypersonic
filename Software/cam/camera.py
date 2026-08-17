@@ -3,16 +3,16 @@ import time
 from machine import LED, UART
 from math import sqrt
 
-ROBOT_1 = True
+ROBOT_1 = False
 CALIBRATION = False
 
 FRAME_HEIGHT = 480 if ROBOT_1 else 480
 FRAME_WIDTH = 480 if ROBOT_1 else 480
 
 #        ROBOT_1,            ROBOT_2
-FRAME_CX = 245 if ROBOT_1 else 225
-FRAME_CY = 197 if ROBOT_1 else 190
-FRAME_R = 223 if ROBOT_1 else 210
+FRAME_CX = 245 if ROBOT_1 else 240
+FRAME_CY = 197 if ROBOT_1 else 200
+FRAME_R = 223 if ROBOT_1 else 208
 
 GOAL_MIN_AREA = 200
 GOAL_MIN_PIXELS = 100
@@ -24,9 +24,25 @@ YELLOW = 2
 BLUE = 4
 
 THRESHOLDS = [
-    (37, 62, 24, 60, 30, 55),  # Ball
-    (26, 39, -4, 10, 20, 33),  # Yellow
-    (25, 35, -16, -8, -12, 5),  # Blue
+    # Defender? 6
+    # (31, 62, 18, 65, 29, 56),  # Ball
+    # (31, 43, 0, 13, 24, 37),  # Yellow
+    # (24, 36, -18, -5, -12, 2),  # Blue
+
+    # Attacker 6
+    # (37, 64, 18, 59, 25, 51),  # Ball
+    # (33, 44, -6, 8, 21, 34),  # Yellow
+    # (27, 37, -18, -8, -7, 5),  # Blue
+
+    # # def
+    # (40, 64, 39, 65, 36, 58),  # Ball
+    # (28, 42, -1, 13, 23, 37),  # Yellow
+    # (21, 35, -16, -4, -14, 2),  # Blue
+
+    # att
+    (36, 63, 9, 57, 32, 55),  # Ball
+    (34, 42, -4, 7, 23, 34),  # Yellow
+    (28, 36, -18, -9, -4, 8),  # Blu
 ]
 # (100, 100, 0, 0, 0, 0)
 
@@ -51,7 +67,8 @@ if CALIBRATION:
 else:
     cam.auto_exposure(False, exposure_us=8328)  # 120fps: 8328;   60fps: 16648
     cam.auto_gain(False, gain_db=20.1079)
-    cam.auto_whitebal(False, rgb_gain_db=(1.9382, 0.0, 7.9588))
+    # cam.auto_whitebal(False, rgb_gain_db=(4.86076, 0.0, 8.943164))
+    cam.auto_whitebal(False, rgb_gain_db=(3.925893, 0.0, 7.293982))
 
 clock = time.clock()
 clock.reset()

@@ -57,7 +57,7 @@ void Camera::update() {
                 yellowGoalDist = (yPx == 0.0f) ? 0.0f : goalPixelToCm(fmaxf(yPx, 1.0f));
                 yellowGoalAngle = angle(camData[2], camData[3]);
                 yellowGoal = true;
-            } else if ((millis() - lastTimeYellowGoalSeen) > 100) {
+            } else if ((millis() - lastTimeYellowGoalSeen) > 10) {
                 yellowGoalDist = 0.0f;
                 yellowGoalAngle = -1.0f;
                 yellowGoal = false;
@@ -69,7 +69,7 @@ void Camera::update() {
                 blueGoalDist = (bPx == 0.0f) ? 0.0f : goalPixelToCm(fmaxf(bPx, 1.0f));
                 blueGoalAngle = angle(camData[4], camData[5]);
                 blueGoal = true;
-            } else if ((millis() - lastTimeBlueGoalSeen) > 100) {
+            } else if ((millis() - lastTimeBlueGoalSeen) > 10) {
                 blueGoalDist = 0.0f;
                 blueGoalAngle = -1.0f;
                 blueGoal = false;
