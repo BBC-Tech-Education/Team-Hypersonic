@@ -25,7 +25,7 @@ void Camera::update() {
         uint8_t first = CAMERA_SERIAL.read();
         uint8_t second = CAMERA_SERIAL.peek();
 
-        if (first == CAMERA_START_BYTE && second == CAMERA_START_BYTE) { // Checks start bytes
+        if ((first == CAMERA_START_BYTE) && (second == CAMERA_START_BYTE)) { // Checks start bytes
             fps = (1000.0f)/(millis() - camTime);
             camTime = millis();
 
@@ -39,52 +39,88 @@ void Camera::update() {
                 camData[byte] = receivedPacket[byte * 2] | (receivedPacket[(byte * 2) + 1] << 8);
             }
 
-            if (camData[0] != 500) {
+            // if (camData[0] != 500) {
+            //     lastTimeBallSeen = millis();
+            //     float ballPx = distance(camData[0], camData[1]);
+            //     ballDist = (ballPx == 0.0f) ? 0.0f : ballPixelToCm(fmaxf(ballPx, 1.0f));
+            //     ballAngle = angle(camData[0], camData[1]);
+            //     ball = true;
+            // } else if ((millis() - lastTimeBallSeen) > 100) {
+            //     ballDist = 0.0f;
+            //     ballAngle = -1.0f;
+            //     ball = false;
+            // }
+
+             if (camData[0] != 500) {
                 lastTimeBallSeen = millis();
-                float bPx = distance(camData[0], camData[1]);
-                ballDist = (bPx == 0.0f) ? 0.0f : ballPixelToCm(fmaxf(bPx, 1.0f));
+                float ballPx = distance(camData[0], camData[1]);
+                ballDist = (ballPx == 0.0f) ? 0.0f : ballPixelToCm(fmaxf(ballPx, 1.0f));
                 ballAngle = angle(camData[0], camData[1]);
                 ball = true;
-            } else if ((millis() - lastTimeBallSeen) > 100) {
+            } else {
                 ballDist = 0.0f;
                 ballAngle = -1.0f;
                 ball = false;
             }
 
+
+
+            // if (camData[2] != 500) {
+            //     lastTimeYellowGoalSeen = millis();
+            //     float yellowPx = distance(camData[2], camData[3]);
+            //     yellowGoalDist = (yellowPx == 0.0f) ? 1.0f : goalPixelToCm(fmaxf(yellowPx, 1.0f));
+            //     yellowGoalAngle = angle(camData[2], camData[3]);
+            //     yellowGoal = true;
+            // } else if ((millis() - lastTimeYellowGoalSeen) > 10) {
+            //     yellowGoalDist = 0.0f;
+            //     yellowGoalAngle = -1.0f;
+            //     yellowGoal = false;
+            // }
+
+            // if (camData[4] != 500) {
+            //     lastTimeBlueGoalSeen = millis();
+            //     float bluePx = distance(camData[4], camData[5]);
+            //     blueGoalDist = (bluePx == 0.0f) ? 1.0f : goalPixelToCm(fmaxf(bluePx, 1.0f));
+            //     blueGoalAngle = angle(camData[4], camData[5]);
+            //     blueGoal = true;
+            // } else if ((millis() - lastTimeBlueGoalSeen) > 10) {
+            //     blueGoalDist = 0.0f;
+            //     blueGoalAngle = -1.0f;
+            //     blueGoal = false;
+            // }
+
             if (camData[2] != 500) {
-                lastTimeYellowGoalSeen = millis();
-                float yPx = distance(camData[2], camData[3]);
-                yellowGoalDist = (yPx == 0.0f) ? 0.0f : goalPixelToCm(fmaxf(yPx, 1.0f));
+                float yellowPx = distance(camData[2], camData[3]);
+                yellowGoalDist = (yellowPx == 0.0f) ? 0.0f : goalPixelToCm(fmaxf(yellowPx, 1.0f));
                 yellowGoalAngle = angle(camData[2], camData[3]);
                 yellowGoal = true;
-            } else if ((millis() - lastTimeYellowGoalSeen) > 10) {
+            } else {
                 yellowGoalDist = 0.0f;
                 yellowGoalAngle = -1.0f;
                 yellowGoal = false;
             }
 
             if (camData[4] != 500) {
-                lastTimeBlueGoalSeen = millis();
-                float bPx = distance(camData[4], camData[5]);
-                blueGoalDist = (bPx == 0.0f) ? 0.0f : goalPixelToCm(fmaxf(bPx, 1.0f));
+                float bluePx = distance(camData[4], camData[5]);
+                blueGoalDist = (bluePx == 0.0f) ? 0.0f : goalPixelToCm(fmaxf(bluePx, 1.0f));
                 blueGoalAngle = angle(camData[4], camData[5]);
                 blueGoal = true;
-            } else if ((millis() - lastTimeBlueGoalSeen) > 10) {
+            } else {
                 blueGoalDist = 0.0f;
                 blueGoalAngle = -1.0f;
                 blueGoal = false;
             }
 
-            lastTimeAttackGoalSeen = BLUE_GOAL_ATTACK ? lastTimeBlueGoalSeen : lastTimeYellowGoalSeen;
-            lastTimeDefendGoalSeen = BLUE_GOAL_ATTACK ? lastTimeYellowGoalSeen : lastTimeBlueGoalSeen;
+            // lastTimeAttackGoalSeen = BLUE_GOAL_ATTACK ? lastTimeBlueGoalSeen : lastTimeYellowGoalSeen;
+            // lastTimeDefendGoalSeen = BLUE_GOAL_ATTACK ? lastTimeYellowGoalSeen : lastTimeBlueGoalSeen;
             
             attackGoalDist = BLUE_GOAL_ATTACK ? blueGoalDist : yellowGoalDist;
             defendGoalDist = BLUE_GOAL_ATTACK ? yellowGoalDist : blueGoalDist;
             attackGoalAngle = BLUE_GOAL_ATTACK ? blueGoalAngle : yellowGoalAngle;
             defendGoalAngle = BLUE_GOAL_ATTACK ? yellowGoalAngle : blueGoalAngle;
 
-            attackGoal = BLUE_GOAL_ATTACK ? (blueGoalDist != 0.0f) : (yellowGoalDist != 0.0f);
-            defendGoal = BLUE_GOAL_ATTACK ? (yellowGoalDist != 0.0f) : (blueGoalDist != 0.0f);
+            attackGoal = BLUE_GOAL_ATTACK ? blueGoal : yellowGoal;
+            defendGoal = BLUE_GOAL_ATTACK ? yellowGoal : blueGoal;
         }
     }
 }

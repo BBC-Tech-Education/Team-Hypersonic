@@ -6,18 +6,18 @@
 #include "config.h"
 
 /* Attack */
-#define ATTACK_SLOW_SPEED (ROBOT_1 ? 25.0f : 35.0f)
-#define ATTACK_FAST_SPEED (ROBOT_1 ? 35.0f : 37.5f)
-#define ATTACK_CLOSE_DISTANCE (ROBOT_1 ? 30.0f : 12.0f) // DON'T CHANGE THIS
+#define ATTACK_SLOW_SPEED (ROBOT_1 ? 25.0f : 40.0f)
+#define ATTACK_FAST_SPEED (ROBOT_1 ? 35.0f : 40.0f)
+#define ATTACK_CLOSE_DISTANCE (ROBOT_1 ? 30.0f : 15.0f) // DON'T CHANGE THIS
 #define ATTACK_SURGE_DISTANCE 20.0f
 #define ATTACK_SURGE_ANGLE 8.0f
 #define ATTACK_SURGE_SPEED 50.0f
 
 /* Defend */
-#define DEFEND_SURGE_SPEED 50.0f
-#define DEFEND_GOAL_DISTANCE (ROBOT_1 ? 42.5f : 30.0f)
-#define DEFEND_SURGE_DISTANCE (ROBOT_1 ? 57.5f : 35.0f)
-#define DEFEND_BALL_DISTANCE (ROBOT_1 ? 19.0f : 30.0f)
+#define DEFEND_SURGE_SPEED 65.0f
+#define DEFEND_GOAL_DISTANCE (ROBOT_1 ? 42.5f : 35.0f)
+#define DEFEND_SURGE_DISTANCE (ROBOT_1 ? 57.5f : 45.0f)
+#define DEFEND_BALL_DISTANCE (ROBOT_1 ? 19.0f : 15.0f)
 
 /* PIDs */
 // Defender: lower absoluteMax if overshooting big differences (vertical/horizontal)
@@ -44,13 +44,13 @@
 #define DEFEND_GOAL_TRACK_MAX (ROBOT_1 ? 0.0f : 0.0f)
 
 // Horizontal PID
-#define HORIZONTAL_KP (ROBOT_1 ? 0.7f : 0.7f) // low // 0.75, _
+#define HORIZONTAL_KP (ROBOT_1 ? 0.7f : 1.0f) // low // 0.75, _
 #define HORIZONTAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define HORIZONTAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
 #define HORIZONTAL_MAX (ROBOT_1 ? 25.0f : 30.0f) // high
 
 // Vertical PID
-#define VERTICAL_KP (ROBOT_1 ? 1.5f : 7.5f) // high
+#define VERTICAL_KP (ROBOT_1 ? 1.5f : 5.0f) // high
 #define VERTICAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define VERTICAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
 #define VERTICAL_MAX (ROBOT_1 ? 30.0f : 30.0f) // low
@@ -80,7 +80,7 @@
 // Light Sensors
 #define LS_NUM 48
 #define LS_NUM_INNER 32
-#define LS_THRESH_BUFF (ROBOT_1 ? 225 : 200) // 250
+#define LS_THRESH_BUFF (ROBOT_1 ? 225 : 200)
 #define DIMMING (ROBOT_1 ? 125 : 125)
 #define LS_0 37
 #define LS_1 36
@@ -99,6 +99,15 @@
 #define CY (ROBOT_1 ? 197 : 200)
 
 // Bluetooth
+#define BLUETOOTH_SERIAL Serial5
+#define BLUETOOTH_PACKET_NUMBER 7
+#define BLUETOOTH_START_BYTE 251
+
+// Kicker
+#define KICK_DIGITAL 15
+#define KICK_ANALOG 41
+#define LDR 26
+#define KICK_DURATION_MS 3
 
 // Function Declarations
 int16_t sign(int16_t value);
@@ -136,6 +145,6 @@ enum DefendState {
     DEFEND_CENTER
 };
 
-#define FIELD_LENGTH (ROBOT_1) ? 200.0f : 180.0f;
+#define FIELD_LENGTH 200.0f;
 
 #endif

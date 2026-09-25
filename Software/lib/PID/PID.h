@@ -12,7 +12,7 @@ private:
     float kp;
     float ki;
     float kd;
-    unsigned long lastTime; // = micros()? will break stuff
+    unsigned long lastTime;
 
     float absMax;
     float integral = 0.0f;

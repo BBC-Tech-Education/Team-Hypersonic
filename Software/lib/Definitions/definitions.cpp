@@ -43,7 +43,7 @@ float ballPixelToCm(float ballPixelDist) {
     #if ROBOT_1
     return (2.33681f * expf(0.0180409f * ballPixelDist)) - 2.33681f;
     #else 
-    return 0.00304002f * ballPixelDist * ballPixelDist;
+    return 3.52421f * expf(0.0176382f * ballPixelDist) - 3.52421f;
     #endif
 }
 

@@ -27,7 +27,6 @@ class Camera {
         unsigned long lastTimeBallSeen = millis();
         unsigned long lastTimeAttackGoalSeen = millis();
         unsigned long lastTimeDefendGoalSeen = millis();
-
         
     private: 
         bool yellowGoal = false;

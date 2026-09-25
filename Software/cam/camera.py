@@ -24,25 +24,9 @@ YELLOW = 2
 BLUE = 4
 
 THRESHOLDS = [
-    # Defender? 6
-    # (31, 62, 18, 65, 29, 56),  # Ball
-    # (31, 43, 0, 13, 24, 37),  # Yellow
-    # (24, 36, -18, -5, -12, 2),  # Blue
-
-    # Attacker 6
-    # (37, 64, 18, 59, 25, 51),  # Ball
-    # (33, 44, -6, 8, 21, 34),  # Yellow
-    # (27, 37, -18, -8, -7, 5),  # Blue
-
-    # # def
-    # (40, 64, 39, 65, 36, 58),  # Ball
-    # (28, 42, -1, 13, 23, 37),  # Yellow
-    # (21, 35, -16, -4, -14, 2),  # Blue
-
-    # att
-    (36, 63, 9, 57, 32, 55),  # Ball
-    (34, 42, -4, 7, 23, 34),  # Yellow
-    (28, 36, -18, -9, -4, 8),  # Blu
+    (40, 69, 17, 63, 36, 60),  # Ball
+    (32, 42, -6, 11, 19, 35),  # Yellow
+    (25, 33, -9, 5, -27, -7),  # Blue
 ]
 # (100, 100, 0, 0, 0, 0)
 
@@ -67,14 +51,13 @@ if CALIBRATION:
 else:
     cam.auto_exposure(False, exposure_us=8328)  # 120fps: 8328;   60fps: 16648
     cam.auto_gain(False, gain_db=20.1079)
-    # cam.auto_whitebal(False, rgb_gain_db=(4.86076, 0.0, 8.943164))
-    cam.auto_whitebal(False, rgb_gain_db=(3.925893, 0.0, 7.293982))
+    cam.auto_whitebal(False, rgb_gain_db=(7.094296, 0.0, 5.820916))
 
 clock = time.clock()
 clock.reset()
 
 uart = UART(3, 115200)
-uart.init(115200)
+# uart.init(115200)
 led.off()
 
 
@@ -156,9 +139,9 @@ else:
         # img.draw_line((FRAME_CX - 5, FRAME_CY, FRAME_CX + 5, FRAME_CY)) # horizontal
         # img.draw_line((FRAME_CX, FRAME_CY - 5, FRAME_CX, FRAME_CY + 5)) # vertical
 
-        # img.draw_line((FRAME_CX, FRAME_CY, data[2], data[3]))  # draws line from center to ball
-        # img.draw_line((FRAME_CX, FRAME_CY, data[4], data[5]))  # draws line from center to ygoal
-        # img.draw_line((FRAME_CX, FRAME_CY, data[6], data[7]))  # draws line from center to bgoal
+        img.draw_line((FRAME_CX, FRAME_CY, data[2], data[3]))  # draws line from center to ball
+        img.draw_line((FRAME_CX, FRAME_CY, data[4], data[5]))  # draws line from center to ygoal
+        img.draw_line((FRAME_CX, FRAME_CY, data[6], data[7]))  # draws line from center to bgoal
 
         uart.writechar(data[0])
         uart.writechar(data[1])
