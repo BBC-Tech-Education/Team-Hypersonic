@@ -3,19 +3,19 @@ import time
 from machine import LED, UART
 from math import sqrt
 
-ROBOT_1 = False
+ROBOT_1 = True
 CALIBRATION = False
 
 FRAME_HEIGHT = 480 if ROBOT_1 else 480
 FRAME_WIDTH = 480 if ROBOT_1 else 480
 
 #        ROBOT_1,            ROBOT_2
-FRAME_CX = 245 if ROBOT_1 else 240
-FRAME_CY = 197 if ROBOT_1 else 200
-FRAME_R = 223 if ROBOT_1 else 208
+FRAME_CX = 250 if ROBOT_1 else 240
+FRAME_CY = 195 if ROBOT_1 else 200
+FRAME_R = 203 if ROBOT_1 else 208
 
-GOAL_MIN_AREA = 200
-GOAL_MIN_PIXELS = 100
+GOAL_MIN_AREA = 300  # 300
+GOAL_MIN_PIXELS = 150  # 100
 BALL_MIN_AREA = 5
 BALL_MIN_PIXELS = 5
 
@@ -24,9 +24,9 @@ YELLOW = 2
 BLUE = 4
 
 THRESHOLDS = [
-    (40, 69, 17, 63, 36, 60),  # Ball
-    (32, 42, -6, 11, 19, 35),  # Yellow
-    (25, 33, -9, 5, -27, -7),  # Blue
+    (39, 70, 26, 65, 32, 58),  # Ball
+    (30, 52, -7, 12, 21, 41),  # Yellow
+    (30, 38, -8, 6, -32, -9),  # Blue
 ]
 # (100, 100, 0, 0, 0, 0)
 
@@ -51,7 +51,7 @@ if CALIBRATION:
 else:
     cam.auto_exposure(False, exposure_us=8328)  # 120fps: 8328;   60fps: 16648
     cam.auto_gain(False, gain_db=20.1079)
-    cam.auto_whitebal(False, rgb_gain_db=(7.094296, 0.0, 5.820916))
+    cam.auto_whitebal(False, rgb_gain_db=(7.9588, 0.0, 6.272384))
 
 clock = time.clock()
 clock.reset()
@@ -139,9 +139,9 @@ else:
         # img.draw_line((FRAME_CX - 5, FRAME_CY, FRAME_CX + 5, FRAME_CY)) # horizontal
         # img.draw_line((FRAME_CX, FRAME_CY - 5, FRAME_CX, FRAME_CY + 5)) # vertical
 
-        img.draw_line((FRAME_CX, FRAME_CY, data[2], data[3]))  # draws line from center to ball
-        img.draw_line((FRAME_CX, FRAME_CY, data[4], data[5]))  # draws line from center to ygoal
-        img.draw_line((FRAME_CX, FRAME_CY, data[6], data[7]))  # draws line from center to bgoal
+        # img.draw_line((FRAME_CX, FRAME_CY, data[2], data[3]))  # draws line from center to ball
+        # img.draw_line((FRAME_CX, FRAME_CY, data[4], data[5]))  # draws line from center to ygoal
+        # img.draw_line((FRAME_CX, FRAME_CY, data[6], data[7]))  # draws line from center to bgoal
 
         uart.writechar(data[0])
         uart.writechar(data[1])

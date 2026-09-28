@@ -27,9 +27,12 @@ static float moveAngle = 0.0f;
 static float rotation = 0.0f;
 static float heading = 0.0f;
 
+static float posX = 0.0f;
+static float posY = 0.0f;
+
 unsigned long lastTimeKicked = millis();
 unsigned long kickTimer = millis();
-bool kicking = false;
+static bool kicking = false;
 
 void setup() {
     delay(100);
@@ -38,20 +41,20 @@ void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
 
-    // while (!bno.begin(OPERATION_MODE_IMUPLUS)) { 
-    //     Serial.println("BNO not working");
-    //     delay(1000);
-    // }
-    // delay(500);
-    // bno.setExtCrystalUse(true);
-    // delay(500);
+    while (!bno.begin(OPERATION_MODE_IMUPLUS)) { 
+        Serial.println("BNO not working");
+        delay(1000);
+    }
+    delay(500);
+    bno.setExtCrystalUse(true);
+    delay(500);
 
-    // battery.init();
-    // motors.init();
-    // camera.init();
-    // lightSensors.init();
+    battery.init();
+    motors.init();
+    camera.init();
+    lightSensors.init();
     // bluetooth.init();
-    kicker.init();
+    // kicker.init();
 
     digitalWrite(LED_BUILTIN, LOW);
 }
@@ -71,6 +74,7 @@ void getAttackRotation() {
     rotation = camera.attackGoal
     ? attackGoalRotation
     : compassCorrectPID.update(heading, 0.0f);
+
     // rotation = compassCorrectPID.update(heading, 0.0f);
 }
 
@@ -105,9 +109,10 @@ void getOrbitMovement() { // Assumes ball is visible DISTANCE MAY BE WRONG
     float strengthFactor = constrain((1.0f) / (1.0f + expf(0.075f * (camera.ballDist - 40.0f))), 0.0f, 1.0f);
     float angleAddition = ballAngleDifference * strengthFactor;
     moveAngle = floatMod(absoluteBallAngle + angleAddition, 360.0f);
-
-    if ((camera.ballDist < ATTACK_SURGE_DISTANCE) && (smallestAngleBetween(absoluteBallAngle, targetAngle) <= ATTACK_SURGE_ANGLE)) { // check
+    if ((camera.ballDist < ATTACK_SURGE_DISTANCE) && (smallestAngleBetween((absoluteBallAngle - 15.0f), targetAngle) <= ATTACK_SURGE_ANGLE)) { // check
+    // if (camera.ballDist < ATTACK_SURGE_DISTANCE) { // check
         moveSpeed = ATTACK_SURGE_SPEED;
+        Serial.println(absoluteBallAngle - 15.0f);
     } else {
         moveSpeed = ATTACK_SLOW_SPEED + (ATTACK_FAST_SPEED - ATTACK_SLOW_SPEED) * (1.0f - fabsf(angleAddition/90.0f));
         // decreasing fast speed: less overshoot when angle addition is small
@@ -118,7 +123,7 @@ void getOrbitMovement() { // Assumes ball is visible DISTANCE MAY BE WRONG
 }
 
 void lineAvoid() {
-    moveSpeed = -1.0f * expf(-3.1f * lightSensors.fieldLineSize + 3.0f) + 75.0f;
+    moveSpeed = expf(0.2f * lightSensors.fieldLineSize + 3.0f) + 60.0f;
     moveAngle = floatMod(lightSensors.fieldLineAngle + 180.0f, 360.0f);
 }
 
@@ -136,35 +141,44 @@ void lineSlide() {
     }
 }
 
-void centerMidField() {
+void getPosition() {
     float absoluteAttackGoalAngle = floatMod(camera.attackGoalAngle + heading, 360.0f);
     float absoluteDefendGoalAngle = floatMod(camera.defendGoalAngle + heading, 360.0f);
     float attX = 0.0f, attY = 0.0f, defX = 0.0f, defY = 0.0f;
 
-    if (camera.attackGoal) { // attack goal visible
+    if (camera.attackGoal) {
         attX = vectorI(camera.attackGoalDist, absoluteAttackGoalAngle);
         attY = vectorJ(camera.attackGoalDist, absoluteAttackGoalAngle);
     }
 
-    if (camera.defendGoal) { // defend goal visible
+    if (camera.defendGoal) {
         defX = vectorI(camera.defendGoalDist, absoluteDefendGoalAngle);
         defY = vectorJ(camera.defendGoalDist, absoluteDefendGoalAngle);
     }
-
-    if ((!camera.attackGoal) && (!camera.defendGoal)) { // both goals not visible
-        moveSpeed = 0.0f;
-        moveAngle = -1.0f; // change to superteam searching algorithm
+        
+    if (!camera.attackGoal && !camera.defendGoal) {
+        posX = 0.0f;
+        posY = 0.0f;
         return;
-    } else if ((camera.attackGoal) && (!camera.defendGoal)) { // attack goal visible only
+    }
+        
+    else if (camera.attackGoal && !camera.defendGoal) {
         defX = attX;
         defY = attY - FIELD_LENGTH;
-    } else if ((camera.defendGoal) && (!camera.attackGoal)) { // defend goal visible only
+    }
+        
+    else if (camera.defendGoal && !camera.attackGoal) {
         attX = defX;
         attY = defY + FIELD_LENGTH;
     }
 
-    float sumX = attX + defX;
-    float sumY = attY + defY;
+    posX = -0.5f * (attX + defX);
+    posY = -0.5f * (attY + defY);
+}
+
+void centerMidField() {
+    float sumX = -2.0f * posX;
+    float sumY = -2.0f * posY;
     float mag = 0.5f * vectorMag(sumX, sumY); // vector to center of field
     float ang = floatMod(450.0f - (atan2f(sumY, sumX) * RAD_TO_DEG_F), 360.0f); // movement angle
     
@@ -285,7 +299,7 @@ void kick() {
 
     uint16_t ldrVal = analogRead(LDR);
     uint16_t chargeTime = millis() - lastTimeKicked;
-    float kickVoltage = analogRead(KICK_ANALOG) * (3.3f / 1023.0f) * (86.7 / 4.7); // check scale ratio
+    float kickVoltage = analogRead(KICK_ANALOG) * (3.3f / 1023.0f) * (86.7f / 4.7f); // check scale ratio
     
     bool shouldKick =
         (ldrVal <= 500) && 
@@ -295,8 +309,8 @@ void kick() {
         (smallestAngleBetween(absoluteBallAngle, heading) <= 5.0f) && 
         (camera.ballDist < ATTACK_SURGE_DISTANCE) && 
         camera.attackGoal && 
-        (smallestAngleBetween(absoluteAttackGoalAngle, heading) <= 7.5f) && 
-        (camera.attackGoalDist < 60.0f);
+        (smallestAngleBetween(absoluteAttackGoalAngle, heading) <= 12.5f) && 
+        (camera.attackGoalDist < 60.0f); // tune value
     
     if (shouldKick && !kicking) { // 1st instance
         kicking = true;
@@ -336,44 +350,50 @@ void debug() {
 void updateLine() {
     #if ATTACK
     if (lightSensors.fieldLineSize != -1.0f) {
-        if ((lightSensors.fieldLineSize > 0.75f) || (!camera.ball)) {
+        if ((lightSensors.fieldLineSize > 0.5f) || (!camera.ball)) {
             lineAvoid();
         } else {
             lineSlide();
         }   
     } 
     #else
-    if (lightSensors.fieldLineSize > 0.35f) {
+    if (lightSensors.fieldLineSize > 0.1f) {
         lineAvoid();
     } 
     #endif
 }
 
 void loop() {
-    // battery.update();
-    // getHeading();
-    // camera.update();
-    // lightSensors.update(heading);
-    // float absoluteBallAngle = floatMod(camera.ballAngle + heading, 360.0f);
-    // bluetooth.update(absoluteBallAngle, camera.ballDist);
+    battery.update();
+    getHeading();
+    camera.update();
+    getPosition();
+    lightSensors.update(heading);
 
-    // #if !COMP
-    // if (battery.batteryLow) {
-    //     motors.move(0.0f, 0.0f, 10.0f, 0.0f);
-    //     return;
-    // } 
-    // #endif
-    
+    float absoluteBallAngle = floatMod(camera.ballAngle + heading, 360.0f);
+    float absoluteAttackGoalAngle = floatMod(camera.attackGoalAngle + heading, 360.0f);
+    float absoluteDefendGoalAngle = floatMod(camera.defendGoalAngle + heading, 360.0f);
+
+
+
+    // bluetooth.update(absoluteBallAngle, camera.ballDist, posX, posY);
     // if (bluetooth.attack) attack();
-    // else defend();
-
-    // updateLine();
-    
-    // #if DEBUG
-    // debug();
-    // #endif
-
+    if (ATTACK) attack();
+    else defend();
+    updateLine();
     // kick();
 
+    #if !COMP
+    if (battery.batteryLow) {
+        motors.move(0.0f, 0.0f, 10.0f, 0.0f);
+        return;
+    } 
+    #endif
+
+    #if DEBUG
+    debug();
+    #endif
+    
     // motors.move(moveSpeed, moveAngle, rotation, heading);
+    motors.move(moveSpeed, moveAngle, rotation, heading);
 }

@@ -40,15 +40,18 @@ bool angleIsInside(float angleBoundCounterClockwise, float angleBoundClockwise, 
 }
 
 float ballPixelToCm(float ballPixelDist) {
-    #if ROBOT_1
-    return (2.33681f * expf(0.0180409f * ballPixelDist)) - 2.33681f;
-    #else 
-    return 3.52421f * expf(0.0176382f * ballPixelDist) - 3.52421f;
-    #endif
+    // #if ROBOT_1
+    // return (2.33681f * expf(0.0180409f * ballPixelDist)) - 2.33681f;
+    // #else 
+    // return 3.52421f * expf(0.0176382f * ballPixelDist) - 3.52421f;
+    // #endif
+    return 11.27529f * expf(0.012392f * ballPixelDist) - 11.27529f;
+    // return ballPixelDist;
 }
 
 float goalPixelToCm(float goalPixelDist) {
-    return expf(0.0252506f * goalPixelDist) - 1.0f;
+    return 2.49775f * expf(0.0188798 * goalPixelDist) - 2.49775f;
+    // return goalPixelDist;
 }
 
 float vectorMag(float i, float j) {
@@ -60,11 +63,11 @@ float vectorPolarAngle(float cartesianAngle) {
 }
 
 float vectorI(float mag, float cartesianAngle) {
-    float polarAngle = vectorPolarAngle(cartesianAngle);
-    return mag * cosf(polarAngle * DEG_TO_RAD_F);
+    float polarAngleI = vectorPolarAngle(cartesianAngle);
+    return mag * cosf(polarAngleI * DEG_TO_RAD_F);
 }
 
 float vectorJ(float mag, float cartesianAngle) {
-    float polarAngle = vectorPolarAngle(cartesianAngle);
-    return mag * sinf(polarAngle * DEG_TO_RAD_F);
+    float polarAngleJ = vectorPolarAngle(cartesianAngle);
+    return mag * sinf(polarAngleJ * DEG_TO_RAD_F);
 }

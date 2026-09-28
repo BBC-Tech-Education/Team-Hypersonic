@@ -9,20 +9,20 @@ class Bluetooth {
         Bluetooth() {};
 
         void init();
-        void update(float absoluteBallAngle, float ballDist);
+        void update(float absoluteBallAngle, float ballDist, float posX, float posY);
 
         bool attack = ATTACK;
 
     private:
-        void send(float absoluteBallAngle, float ballDist);
+        void send(float absoluteBallAngle, float ballDist, float posX, float posY);
         void receive();
         void resolveConflict();
 
         bool switching = false;
         bool connected = false;
 
-        uint8_t receivedPacket[5] = {0};
-        uint16_t otherData[3] = {0};
+        uint8_t receivedPacket[BLUETOOTH_PACKET_NUMBER - 2] = {0};
+        uint16_t otherData[5] = {0};
         uint8_t counter = 0;
 
         unsigned long lastTimeConnected = 0;

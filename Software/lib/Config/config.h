@@ -5,7 +5,7 @@
 #define COMP false
 
 /* ROBOT */
-#define ROBOT_1 false
+#define ROBOT_1 true
 #define ROBOT_2 (!ROBOT_1)
 #define ATTACK false
 
@@ -15,7 +15,7 @@
 // False: Attacking Yellow Goal (Defending Blue Goal)
 
 /* DEBUG */
-#define DEBUG_MODE 0
+#define DEBUG_MODE 3
 #define DEBUG          (DEBUG_MODE != 0)
 #define DEBUG_BATTERY  (DEBUG_MODE == 1)
 #define DEBUG_IMU      (DEBUG_MODE == 2)
