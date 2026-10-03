@@ -53,7 +53,7 @@ void setup() {
     motors.init();
     camera.init();
     lightSensors.init();
-    // bluetooth.init();
+    bluetooth.init();
     // kicker.init();
 
     digitalWrite(LED_BUILTIN, LOW);
@@ -109,10 +109,10 @@ void getOrbitMovement() { // Assumes ball is visible DISTANCE MAY BE WRONG
     float strengthFactor = constrain((1.0f) / (1.0f + expf(0.075f * (camera.ballDist - 40.0f))), 0.0f, 1.0f);
     float angleAddition = ballAngleDifference * strengthFactor;
     moveAngle = floatMod(absoluteBallAngle + angleAddition, 360.0f);
-    if ((camera.ballDist < ATTACK_SURGE_DISTANCE) && (smallestAngleBetween((absoluteBallAngle - 15.0f), targetAngle) <= ATTACK_SURGE_ANGLE)) { // check
+    if ((camera.ballDist < ATTACK_SURGE_DISTANCE) && (smallestAngleBetween(absoluteBallAngle, targetAngle) <= ATTACK_SURGE_ANGLE)) { // check
     // if (camera.ballDist < ATTACK_SURGE_DISTANCE) { // check
+        moveAngle = targetAngle;
         moveSpeed = ATTACK_SURGE_SPEED;
-        Serial.println(absoluteBallAngle - 15.0f);
     } else {
         moveSpeed = ATTACK_SLOW_SPEED + (ATTACK_FAST_SPEED - ATTACK_SLOW_SPEED) * (1.0f - fabsf(angleAddition/90.0f));
         // decreasing fast speed: less overshoot when angle addition is small
@@ -123,7 +123,7 @@ void getOrbitMovement() { // Assumes ball is visible DISTANCE MAY BE WRONG
 }
 
 void lineAvoid() {
-    moveSpeed = expf(0.2f * lightSensors.fieldLineSize + 3.0f) + 60.0f;
+    moveSpeed = expf(0.2f * lightSensors.fieldLineSize + 3.0f) + 75.0f;
     moveAngle = floatMod(lightSensors.fieldLineAngle + 180.0f, 360.0f);
 }
 
@@ -182,14 +182,14 @@ void centerMidField() {
     float mag = 0.5f * vectorMag(sumX, sumY); // vector to center of field
     float ang = floatMod(450.0f - (atan2f(sumY, sumX) * RAD_TO_DEG_F), 360.0f); // movement angle
     
-    moveSpeed = constrain(1.5f * mag, 0.0f, 40.0f);
+    moveSpeed = constrain(1.5f * mag, 0.0f, 45.0f);
     moveAngle = ang;
 }
 
 AttackState getAttackState() {
     if (camera.ball) return ATTACK_ORBIT;
 
-    if ((millis() - camera.lastTimeBallSeen) > 2000) return ATTACK_CENTER;
+    if ((millis() - camera.lastTimeBallSeen) > 1000) return ATTACK_CENTER;
 
     return ATTACK_PAUSE;
 }
@@ -350,14 +350,14 @@ void debug() {
 void updateLine() {
     #if ATTACK
     if (lightSensors.fieldLineSize != -1.0f) {
-        if ((lightSensors.fieldLineSize > 0.5f) || (!camera.ball)) {
+        if ((lightSensors.fieldLineSize > 0.09f) || (!camera.ball)) {
             lineAvoid();
         } else {
             lineSlide();
         }   
     } 
     #else
-    if (lightSensors.fieldLineSize > 0.1f) {
+    if (lightSensors.fieldLineSize > 0.09f) {
         lineAvoid();
     } 
     #endif
@@ -376,9 +376,9 @@ void loop() {
 
 
 
-    // bluetooth.update(absoluteBallAngle, camera.ballDist, posX, posY);
-    // if (bluetooth.attack) attack();
-    if (ATTACK) attack();
+    bluetooth.update(absoluteBallAngle, camera.ballDist, posX, posY);
+    if (bluetooth.attack) attack();
+    // if (ATTACK) attack();
     else defend();
     updateLine();
     // kick();
@@ -394,6 +394,6 @@ void loop() {
     debug();
     #endif
     
-    // motors.move(moveSpeed, moveAngle, rotation, heading);
+    // motors.move(0.0f, 0.0f, rotation, heading);
     motors.move(moveSpeed, moveAngle, rotation, heading);
 }

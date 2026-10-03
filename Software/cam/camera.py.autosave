@@ -3,16 +3,16 @@ import time
 from machine import LED, UART
 from math import sqrt
 
-ROBOT_1 = True
-CALIBRATION = False
+ROBOT_1 = False
+CALIBRATION = True
 
 FRAME_HEIGHT = 480 if ROBOT_1 else 480
 FRAME_WIDTH = 480 if ROBOT_1 else 480
 
 #        ROBOT_1,            ROBOT_2
-FRAME_CX = 233 if ROBOT_1 else 253
-FRAME_CY = 185 if ROBOT_1 else 200
-FRAME_R = 190 if ROBOT_1 else 195
+FRAME_CX = 253 if ROBOT_1 else 233
+FRAME_CY = 200 if ROBOT_1 else 185
+FRAME_R = 195 if ROBOT_1 else 190
 
 GOAL_MIN_AREA = 300  # 300
 GOAL_MIN_PIXELS = 150  # 100
@@ -48,7 +48,7 @@ if CALIBRATION:
     # cam.auto_exposure(True)
     # cam.auto_gain(True)
     cam.auto_exposure(False, exposure_us=8328)
-    cam.auto_gain(False, gain_db=20.1079)
+    cam.auto_gain(False, gain_db=100.1079)
     # cam.auto_whitebal(False, rgb_gain_db=(8.420106, 0.0, 6.969092))
     cam.auto_whitebal(True)
     print("Calibration Mode")

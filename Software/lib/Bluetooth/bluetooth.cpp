@@ -7,24 +7,35 @@ void Bluetooth::init() { // Initialises UART with baud rate
 void Bluetooth::send(float absoluteBallAngle, float ballDist, float posX, float posY) { // Sends ball distance and role
     BLUETOOTH_SERIAL.write(BLUETOOTH_START_BYTE);
     BLUETOOTH_SERIAL.write(BLUETOOTH_START_BYTE);
-    BLUETOOTH_SERIAL.write(((uint16_t)absoluteBallAngle) & 255); // Lower half
-    BLUETOOTH_SERIAL.write((((uint16_t)absoluteBallAngle) >> 8) & 255); // Upper half
-    BLUETOOTH_SERIAL.write(((uint16_t)ballDist) & 255); // Lower half
-    BLUETOOTH_SERIAL.write((((uint16_t)ballDist) >> 8) & 255); // Upper half
-    BLUETOOTH_SERIAL.write(((uint16_t)posX) & 255); // Lower half
-    BLUETOOTH_SERIAL.write((((uint16_t)posX) >> 8) & 255); // Upper half
-    BLUETOOTH_SERIAL.write(((uint16_t)posY) & 255); // Lower half
-    BLUETOOTH_SERIAL.write((((uint16_t)posY) >> 8) & 255); // Upper half
-    BLUETOOTH_SERIAL.write(attack);
+    // BLUETOOTH_SERIAL.write(((uint16_t)absoluteBallAngle) & 255); // Lower half
+    BLUETOOTH_SERIAL.write(200 & 255);
+    // BLUETOOTH_SERIAL.write((((uint16_t)absoluteBallAngle) >> 8) & 255); // Upper half
+    BLUETOOTH_SERIAL.write((200 >> 8) & 255);
+    // BLUETOOTH_SERIAL.write(((uint16_t)ballDist) & 255); // Lower half
+    BLUETOOTH_SERIAL.write(200 & 255);
+    // BLUETOOTH_SERIAL.write((((uint16_t)ballDist) >> 8) & 255); // Upper half
+    BLUETOOTH_SERIAL.write((200 >> 8) & 255);
+    // BLUETOOTH_SERIAL.write(((uint16_t)posX) & 255); // Lower half
+    BLUETOOTH_SERIAL.write(200 & 255);
+    // BLUETOOTH_SERIAL.write((((uint16_t)posX) >> 8) & 255); // Upper half
+    BLUETOOTH_SERIAL.write((200 >> 8) & 255);
+    // BLUETOOTH_SERIAL.write(((uint16_t)posY) & 255); // Lower half
+    BLUETOOTH_SERIAL.write(200 & 255);
+    // BLUETOOTH_SERIAL.write((((uint16_t)posY) >> 8) & 255); // Upper half
+    BLUETOOTH_SERIAL.write((200 >> 8) & 255);
+    // BLUETOOTH_SERIAL.write(attack);
+    BLUETOOTH_SERIAL.write(1);
     lastTimeSent = millis();
 }
 
 void Bluetooth::receive() {
     if (BLUETOOTH_SERIAL.available() >= BLUETOOTH_PACKET_NUMBER) {
+        Serial.println("1");
         uint8_t first = BLUETOOTH_SERIAL.read();
         uint8_t second = BLUETOOTH_SERIAL.peek();
 
         if ((first == BLUETOOTH_START_BYTE) && (second == BLUETOOTH_START_BYTE)) {
+            
             lastTimeConnected = millis();
 
             BLUETOOTH_SERIAL.read();
@@ -40,6 +51,18 @@ void Bluetooth::receive() {
             otherData[4] = receivedPacket[8];
         }
     }
+
+    // Serial.print(otherData[0]);
+    // Serial.print(" ");
+    // Serial.print(otherData[1]);
+    // Serial.print(" ");
+    // Serial.print(otherData[2]);
+    // Serial.print(" ");
+    // Serial.print(otherData[3]);
+    // Serial.print(" ");
+    // Serial.print(otherData[4]);
+    // Serial.println();
+
 }
 
 void Bluetooth::resolveConflict() {
@@ -84,8 +107,8 @@ void Bluetooth::update(float absoluteBallAngle, float ballDist, float posX, floa
 
         resolveConflict();   
     } else {
-        if (attack != ATTACK) { // MAYBE CHANGE IT TO GO TO DEFENDER IF CONNECTION IS STABLE
-            attack = ATTACK; // reverts back to original role
+        if (attack) {
+            attack = false;
             lastTimeSwitched = millis();
         }
         counter = 0;

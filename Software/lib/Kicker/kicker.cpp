@@ -2,7 +2,7 @@
 
 void Kicker::init() {
     pinMode(KICK_DIGITAL, OUTPUT);
-    // pinMode(KICK_ANALOG, INPUT);
+    pinMode(KICK_ANALOG, INPUT);
     // pinMode(LDR, INPUT); // MAKE SURE YOU DON'T KILL THE TEENSY PIN
     digitalWrite(KICK_DIGITAL, LOW); // default high?
 }

@@ -6,17 +6,17 @@
 #include "config.h"
 
 /* Attack */
-#define ATTACK_SLOW_SPEED (ROBOT_1 ? 30.0f : 40.0f)
-#define ATTACK_FAST_SPEED (ROBOT_1 ? 30.0f : 40.0f)
-#define ATTACK_CLOSE_DISTANCE (ROBOT_1 ? 30.0f : 15.0f) // DON'T CHANGE THIS
+#define ATTACK_SLOW_SPEED (ROBOT_1 ? 40.0f : 30.0f)
+#define ATTACK_FAST_SPEED (ROBOT_1 ? 40.0f : 30.0f)
+#define ATTACK_CLOSE_DISTANCE (ROBOT_1 ? 30.0f : 30.0f) // DON'T CHANGE THIS
 #define ATTACK_SURGE_DISTANCE 7.0f
 #define ATTACK_SURGE_ANGLE 8.0f
 #define ATTACK_SURGE_SPEED 50.0f
 
 /* Defend */
 #define DEFEND_SURGE_SPEED 65.0f
-#define DEFEND_GOAL_DISTANCE (ROBOT_1 ? 20.0f : 35.0f)
-#define DEFEND_SURGE_DISTANCE (ROBOT_1 ? 25.0f : 45.0f)
+#define DEFEND_GOAL_DISTANCE (ROBOT_1 ? 20.0f : 25.0f)
+#define DEFEND_SURGE_DISTANCE (ROBOT_1 ? 25.0f : 30.0f)
 #define DEFEND_BALL_DISTANCE (ROBOT_1 ? 19.0f : 15.0f)
 
 /* PIDs */
@@ -28,29 +28,29 @@
 // Halve P
 #define IMU_KP (ROBOT_1 ? 0.6f : 0.6f) // not too high (impacts orbit) 
 #define IMU_KI (ROBOT_1 ? 0.0f : 0.0f)
-#define IMU_KD (ROBOT_1 ? (0.04f / 2.0f) : (0.06f / 2.0f)) // 0.03f
+#define IMU_KD (ROBOT_1 ? (0.04f / 2.0f) : (0.04f / 2.0f)) // 0.03f
 #define IMU_MAX (ROBOT_1 ? 0.0f : 0.0f)
 
 // Attacker Goal Tracking PID
-#define ATTACK_GOAL_TRACK_KP (ROBOT_1 ? 0.3f : 0.2f) // high
+#define ATTACK_GOAL_TRACK_KP (ROBOT_1 ? 0.2f : 0.3f) // high
 #define ATTACK_GOAL_TRACK_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define ATTACK_GOAL_TRACK_KD (ROBOT_1 ? 0.01f : 0.01f) // no D
 #define ATTACK_GOAL_TRACK_MAX (ROBOT_1 ? 30.0f : 30.0f)
 
 // Defender Goal Tracking PID
-#define DEFEND_GOAL_TRACK_KP (ROBOT_1 ? 0.3f : 0.5f) // high
+#define DEFEND_GOAL_TRACK_KP (ROBOT_1 ? 0.3f : 0.3f) // high
 #define DEFEND_GOAL_TRACK_KI (ROBOT_1 ? 0.0f : 0.0f)
-#define DEFEND_GOAL_TRACK_KD (ROBOT_1 ? 0.0075f : 0.02f) // high D
+#define DEFEND_GOAL_TRACK_KD (ROBOT_1 ? 0.0075f : 0.0075f) // high D
 #define DEFEND_GOAL_TRACK_MAX (ROBOT_1 ? 0.0f : 0.0f)
 
 // Horizontal PID
-#define HORIZONTAL_KP (ROBOT_1 ? 1.5f : 1.0f) // low // 0.75, _
+#define HORIZONTAL_KP (ROBOT_1 ? 1.5f : 0.5f) // low // 0.75, _
 #define HORIZONTAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define HORIZONTAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
-#define HORIZONTAL_MAX (ROBOT_1 ? 25.0f : 30.0f) // high
+#define HORIZONTAL_MAX (ROBOT_1 ? 25.0f : 20.0f) // high
 
 // Vertical PID
-#define VERTICAL_KP (ROBOT_1 ? 5.0f : 5.0f) // high
+#define VERTICAL_KP (ROBOT_1 ? 5.0f : 1.5f) // high
 #define VERTICAL_KI (ROBOT_1 ? 0.0f : 0.0f)
 #define VERTICAL_KD (ROBOT_1 ? 0.0f : 0.0f) // no D
 #define VERTICAL_MAX (ROBOT_1 ? 50.0f : 30.0f) // low
@@ -80,7 +80,7 @@
 // Light Sensors
 #define LS_NUM 48
 #define LS_NUM_INNER 32
-#define LS_THRESH_BUFF (ROBOT_1 ? 225 : 200)
+#define LS_THRESH_BUFF (ROBOT_1 ? 250 : 250)
 #define DIMMING (ROBOT_1 ? 125 : 125)
 #define LS_0 37
 #define LS_1 36
@@ -95,8 +95,8 @@
 #define CAMERA_SERIAL Serial1
 #define CAMERA_PACKET_NUMBER 14
 #define CAMERA_START_BYTE 255
-#define CX (ROBOT_1 ? 250 : 240)
-#define CY (ROBOT_1 ? 195 : 200)
+#define CX (ROBOT_1 ? 233 : 253)
+#define CY (ROBOT_1 ? 185 : 200)
 
 // Bluetooth
 #define BLUETOOTH_SERIAL Serial5

@@ -25,7 +25,7 @@ class Bluetooth {
         uint16_t otherData[5] = {0};
         uint8_t counter = 0;
 
-        unsigned long lastTimeConnected = 0;
+        unsigned long lastTimeConnected = millis();
         unsigned long lastTimeSent = millis();
         unsigned long lastTimeSwitched = millis();
 
