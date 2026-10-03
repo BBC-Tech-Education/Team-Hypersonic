@@ -95,8 +95,8 @@
 #define CAMERA_SERIAL Serial1
 #define CAMERA_PACKET_NUMBER 14
 #define CAMERA_START_BYTE 255
-#define CX (ROBOT_1 ? 233 : 253)
-#define CY (ROBOT_1 ? 185 : 200)
+#define CX (ROBOT_1 ? 240 : 240)
+#define CY (ROBOT_1 ? 190 : 200)
 
 // Bluetooth
 #define BLUETOOTH_SERIAL Serial5

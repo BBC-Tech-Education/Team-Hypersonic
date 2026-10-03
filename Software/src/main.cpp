@@ -84,6 +84,7 @@ void getDefendRotation() {
     rotation = camera.defendGoal
     ? defendGoalRotation 
     : compassCorrectPID.update(heading, 0.0f);
+
     // rotation = compassCorrectPID.update(heading, 0.0f);
 }
 
@@ -371,14 +372,12 @@ void loop() {
     lightSensors.update(heading);
 
     float absoluteBallAngle = floatMod(camera.ballAngle + heading, 360.0f);
-    float absoluteAttackGoalAngle = floatMod(camera.attackGoalAngle + heading, 360.0f);
-    float absoluteDefendGoalAngle = floatMod(camera.defendGoalAngle + heading, 360.0f);
+    // float absoluteAttackGoalAngle = floatMod(camera.attackGoalAngle + heading, 360.0f);
+    // float absoluteDefendGoalAngle = floatMod(camera.defendGoalAngle + heading, 360.0f);
 
-
-
-    bluetooth.update(absoluteBallAngle, camera.ballDist, posX, posY);
-    if (bluetooth.attack) attack();
-    // if (ATTACK) attack();
+    // bluetooth.update(absoluteBallAngle, camera.ballDist, posX, posY);
+    // if (bluetooth.attack) attack();
+    if (ATTACK) attack();
     else defend();
     updateLine();
     // kick();

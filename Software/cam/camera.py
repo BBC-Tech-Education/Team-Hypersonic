@@ -10,9 +10,9 @@ FRAME_HEIGHT = 480 if ROBOT_1 else 480
 FRAME_WIDTH = 480 if ROBOT_1 else 480
 
 #        ROBOT_1,            ROBOT_2
-FRAME_CX = 233 if ROBOT_1 else 253
-FRAME_CY = 185 if ROBOT_1 else 200
-FRAME_R = 190 if ROBOT_1 else 195
+FRAME_CX = 240 if ROBOT_1 else 240
+FRAME_CY = 190 if ROBOT_1 else 200
+FRAME_R = 185 if ROBOT_1 else 185
 
 GOAL_MIN_AREA = 300  # 300
 GOAL_MIN_PIXELS = 150  # 100
@@ -24,9 +24,9 @@ YELLOW = 2
 BLUE = 4
 
 THRESHOLDS = [
-    (30, 59, 13, 57, 20, 51),  # Ball
-    (31, 45, -9, 5, 15, 33),  # Yellow
-    (23, 37, -11, 3, -28, -9),  # Blue
+    (11, 25, 2, 21, 14, 31),  # Ball
+    (100, 100, 0, 0, 0, 0),  # Yellow
+    (100, 100, 0, 0, 0, 0),  # Blue
 
     # (36, 66, 15, 58, 12, 53),  # Ball
     # (30, 63, -12, 4, 18, 43),  # Yellow
@@ -47,15 +47,15 @@ cam.snapshot()
 if CALIBRATION:
     # cam.auto_exposure(True)
     # cam.auto_gain(True)
-    cam.auto_exposure(False, exposure_us=8328)
-    cam.auto_gain(False, gain_db=20.1079)
+    cam.auto_exposure(False, exposure_us=16648)  # 8328
+    cam.auto_gain(False, gain_db=100.1079)
     # cam.auto_whitebal(False, rgb_gain_db=(8.420106, 0.0, 6.969092))
     cam.auto_whitebal(True)
     print("Calibration Mode")
 
 else:
     cam.auto_exposure(False, exposure_us=8328)  # 120fps: 8328;   60fps: 16648
-    cam.auto_gain(False, gain_db=17.1079)
+    cam.auto_gain(False, gain_db=80.1079)
     cam.auto_whitebal(False, rgb_gain_db=(4.349678, 0.0, 5.509518))
 
 clock = time.clock()
@@ -78,6 +78,7 @@ else:
         clock.tick()
         # time2 = time.ticks_ms()
         img = cam.snapshot()
+        # img.draw_circle((FRAME_CX, FRAME_CY, FRAME_R))
         # print(time.ticks_ms() - time2, end="\t")
 
         blobs = img.find_blobs(
